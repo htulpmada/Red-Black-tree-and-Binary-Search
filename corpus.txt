@@ -14,23 +14,3 @@ Main Success Scenario:
 Extensions:
 	2a. No use of services/No services given
 		2a. 1 Skip member/provider
-
-Use Case: Interactive Mode
-Context: Add, Delete, Update member and provider records
-Actors: Health Care Professional, Manager, Acme Accounting
-Main Success Scenario:
-	1. Prompt for option (Add, Delete, or Update).
-	2. Options:
-		2.1 Member or provider input
-		2.2 Keyboard input for new/modified data
-		2.3 Update option open for Acme Accounting to remote modify at 9p.m.
-Extensions:
-	1a. Non valid option
-		1a.1 Display invalid option and use case restarts at 1.
-
-Use Case: Access Provider Directory
-Context: Request a list of services, names, and corresponding codes and fees
-Actors: Health Care Professional
-Main Success Scenario:
-	1. Keyboard Input to Request Directory.
-	2. Send email to Provider containing alphabetically ordered list.

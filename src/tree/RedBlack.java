@@ -10,9 +10,10 @@ public class RedBlack extends Bst {
 	}
 
 	
-	protected void ins(String word) {
+	protected Node ins(String word) {
 		super.ins(word);
 		fixUp();
+		return root;
 	}
 	protected void del(String word) {
 		super.del(word);
@@ -21,7 +22,8 @@ public class RedBlack extends Bst {
 	
 	
 	private void fixUp() {
-		
+		int dir=0;
+		rotate(dir);
 	}
 	private void rotate(int direction){
 		switch(direction){

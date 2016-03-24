@@ -1,14 +1,16 @@
 package tree;
 
+
 public class Node {
 	Node Left,Right,Parent;
 	String data;
+	boolean red;
 	int frequency;
 	
-	public Node(String s,Node p){
+	public Node(String s){
 		Left=Right=null;
-		Parent=p;
 		data=s;
+		red=true;
 		frequency=1;
 	}
 	

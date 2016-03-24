@@ -10,6 +10,7 @@ public class Main {
 	static boolean bst=false;
 	static boolean rbTree=false;
 	static int argI=0;
+	static Bst BST;
 	
 	
 	
@@ -20,7 +21,7 @@ public class Main {
 		for(String w :words){
 			System.out.println(w);					
 		}
-		
+		BST=new Bst(words);
 	}
 
 	
