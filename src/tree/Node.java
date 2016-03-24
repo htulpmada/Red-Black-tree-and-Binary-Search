@@ -2,10 +2,10 @@ package tree;
 
 
 public class Node {
-	Node Left,Right,Parent;
-	String data;
-	boolean red;
-	int frequency;
+	private Node Left,Right,Parent;
+	private String data;
+	private boolean red;
+	private int frequency;
 	
 	public Node(String s){
 		Left=Right=null;
@@ -13,27 +13,32 @@ public class Node {
 		red=true;
 		frequency=1;
 	}
+
+	public Node getLeft(){return this.Left;}
 	
+	public Node getRight(){return this.Right;}
 	
+	public Node getParent(){return this.Parent;}
 	
+	public String getData(){return this.data;}
 	
-	protected void del(){
-		if(this.Parent!=null){
-			if(this.Parent.Left.data==this.data){
-				this.Parent.Left=null;
-			}
-			else if(this.Parent.Right.data==this.data){
-				this.Parent.Right=null;
-			}
-			else{
-				System.out.println("error deleting, has parent");
-			}
-		}
-		else{
-			System.out.println("error, deleting root");
-		}
-	}
+	public int getFreq(){return this.frequency;}
 	
+	public boolean isRed(){return this.red==true;}
 	
+	public void setLeft(Node n){this.Left=n;}
 	
+	public void setRight(Node n){this.Right=n;}
+	
+	public void setParent(Node n){this.Parent=n;}
+	
+	public void setData(String s){this.data=s;}
+	
+	public void makeRed(){this.red=true;}
+	
+	public void makeBlack(){this.red=false;}
+	
+	public void incFreq(){this.frequency++;}
+	
+	public void decFreq(){this.frequency--;}
 }

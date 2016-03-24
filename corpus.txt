@@ -1,16 +1,4 @@
-Use Case: Main Accounting Procedure
 Context: Accounting Procedure 
-Actors: ChockAn Manager, Health Care Provider, ChocAn member
-Main Success Scenario:
-	1. Reads in that week's service files.
-	2. Generate Reports.
-		2.1 Can be requested by ChocAn Manager at anytime
-	3. Send Reports:
-		3.1 Each member that used a service is emailed with a list sorted by date.
-		3.2 Each Provider is sent a list of services given.
-		3.3 EFT report is written to disk.
-		3.4 Summary report is emailed to the Manager.
+Use Case: Main Accounting Procedure
+Actors: ChockAn Manager, Health Care Provider, ChockAn member z  a a a 
 
-Extensions:
-	2a. No use of services/No services given
-		2a. 1 Skip member/provider

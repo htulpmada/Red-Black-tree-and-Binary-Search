@@ -15,9 +15,10 @@ public class RedBlack extends Bst {
 		fixUp();
 		return root;
 	}
-	protected void del(String word) {
-		super.del(word);
+	protected Node del(String word) {
+		super.del(root,word);
 		fixUp();
+		return root;
 	}
 	
 	
@@ -37,6 +38,4 @@ public class RedBlack extends Bst {
 			break;
 		}
 	}
-	
-	
 }
