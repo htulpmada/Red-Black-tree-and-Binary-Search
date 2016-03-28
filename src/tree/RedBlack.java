@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 public class RedBlack extends Bst {	
 	public RedBlack(ArrayList<String> words) {
-		super(words);
-		fixUp();
-		
+		for(String word :words){
+			root=ins(word);
+			fixUp();
+		}
 	}
 
 	

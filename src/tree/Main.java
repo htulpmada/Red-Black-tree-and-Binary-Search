@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
-
+/**
+ * 
+ * @author Adam Pluth
+ *
+ */
 public class Main {
 	static ArrayList<String> words=new ArrayList<String>();
 	static ArrayList<String> commands=new ArrayList<String>();
@@ -13,20 +17,24 @@ public class Main {
 	static int argI=0;
 	static Bst BST;
 	static boolean haveTree = false;
-	
-	
+	/**
+	 * 
+	 * @param args - command line arguments
+	 */
 	public static void main(String[] args) {
 		processArgs(args);
 		readInFiles(args[1]);
-		for(String w :words){System.out.println(w);}//tester to make sure words are stripped
 		BST=new Bst(words);
+		Bst.setParents(Bst.getRoot());
 		haveTree=true;
 		readInFiles(args[2]);
-		for(String c :commands){System.out.print(c+" ");}//tester to make sure words are stripped
+		//System.out.println();
+		Bst.findMinMax(Bst.getRoot());
 		BST=processCommands(BST,commands);
-		Bst.lvOrder(Bst.getRoot());
+		//Bst.setParents(Bst.getRoot());
+		//Bst.print();
+		
 	}
-
 
 	public static void readInFiles(String args){
 		File file = new File(args);
@@ -78,14 +86,19 @@ public class Main {
 			switch(c.get(i)){
 			case("i"):
 				b.ins(c.get(i+1));
+				System.out.println(c.get(i+1)+" inserted");
+				b.setParents(b.getRoot());
 				break;
 			case("d"):
 				b.del(c.get(i+1));
+				System.out.println(c.get(i+1)+" deleted");
+				b.setParents(b.getRoot());
 				break;
 			case("f"):
-				System.out.println(c.get(i+1)+": "+b.getFreq(c.get(i+1)));
+				System.out.println("frequency of "+c.get(i+1)+": "+b.getFreq(c.get(i+1)));
 				break;
 			case("s"):
+				System.out.println("\tshow tree:");
 				b.print();
 				i--;
 				break;

@@ -4,88 +4,73 @@ import java.util.ArrayList;
 
 public class Bst {
 	protected static Node root;
+	protected static long count=0;
+	protected static int minDep=100000;
+	protected static int maxDep=0; 
 	
+	public Bst(){}
 	public Bst(ArrayList<String> words){
 		for(String word :words){
 			root=ins(word);
-			System.out.print("\ninserted\n\n");
 		}
-		print(root);
-	}
-	
+	}	
 	
 	//////////////getter/setter f(x)
 	public static Node getRoot(){return root;}
 	public void setRoot(Node n){root=n;}
-	
+	protected long getCount(){return count;}
+ 	protected int minDepth(){return minDep;}
+ 	protected int maxDepth(){return maxDep;}
+ 
 	
 	/////////////level order print f(x)'s
-	protected void print(){print(root);}//no args prints root of tree
-	protected void print(Node n){////prints all subtrees of n
+	protected static void print(){print(root);}//no args prints root of tree
+	protected static void print(Node n){////prints all subtrees of n
 		Queue nodes=new Queue();
 		nodes.insert(n);
-		Node nxtLv=root;
+		int nxtLv=root.getDepth();
 		int level=0;
 		while(nodes.getfront()!=null){
 			Node t=nodes.gethead();
 			if(t==null){continue;}
-			if(nxtLv!=null&&nxtLv.getData()==t.getData()){
+			if(nxtLv==t.getDepth()){
 				System.out.print("\n"+ ++level+":");
-				if(t.getLeft()!=null){nxtLv=t.getLeft();}
-				else if(t.getRight()!=null){nxtLv=t.getRight();}
-				else{
-					if(nodes.getfront().get()==null){
-						System.out.print(" "+t.getData()+" "+t.getFreq()+" ");
-						nodes.insert(t.getLeft());
-						nodes.insert(t.getRight());
-						continue;
-						}
-					if(nodes.getfront().get().getLeft()!=null){
-						nxtLv=nodes.getfront().get().getLeft();
+				nxtLv++;
+				if(nodes.getfront()==null){
+					if(t.getLeft()==null&&t.getRight()==null){System.out.print(" =");}
+					System.out.print(""+t.getData()+"("+t.getParent().getData()+")"+t.getFreq()+isRoot(t)+" ");
+					nodes.insert(t.getLeft());
+					nodes.insert(t.getRight());
+					continue;
 					}
-					else if(nodes.getfront().get().getRight()!=null){
-						nxtLv=nodes.getfront().get().getRight();
-					}
-				}
 			}
-			
-			System.out.print(" "+t.getData()+" "+t.getFreq()+" ");
+			if(t.getLeft()==null&&t.getRight()==null){System.out.print(" =");}
+			System.out.print(""+t.getData()+"("+t.getParent().getData()+")"+t.getFreq()+isRoot(t)+" ");
 			nodes.insert(t.getLeft());
 			nodes.insert(t.getRight());
 		}
 		System.out.print("\n");
-	}
-	
-	public static void lvOrder(Node n){////prints all subtrees of n
-		Queue nodes=new Queue();
-		nodes.insert(n);
-		Node nxtLv=root;
-		int level=0;
-		while(nodes.getfront()!=null){
-			Node t=nodes.gethead();
-			if(t==null){continue;}
-			System.out.println(" "+t.getData()+" "+t.getFreq()+" ");
-			nodes.insert(t.getLeft());
-			nodes.insert(t.getRight());
-		}
-	}
+	}	
 	
 	/////////////insert f(x)'s
 	protected Node ins(String word) {//initial call
-		root=ins(root,word);
-		//System.out.print("root:"+root.getData()+" f:"+root.getFreq());
+		root=ins(root,word,1);
 		return root;
 	}
-	private Node ins(Node n,String word){//overloaded to recurse
-		if(n==null){return new Node(word);}
+	private Node ins(Node n,String word, int lvl){//overloaded to recurse
+		if(n==null){
+			count++;
+			//System.out.print("\n"+word+" inserted @lvl: "+ lvl+" No:"+count+"\n\n");
+			return new Node(word,lvl);
+			}
 		switch(compare(word,n.getData())){
 			case(-1)://less than
-				n.setLeft(ins(n.getLeft(),word));
+				n.setLeft(ins(n.getLeft(),word,++lvl));
 				break;
 			case(1)://greater than
-				n.setRight(ins(n.getRight(),word));
+				n.setRight(ins(n.getRight(),word,++lvl));
 				break;
-			default:
+			default://equals
 				n.incFreq();
 			}
 		return n;
@@ -95,11 +80,13 @@ public class Bst {
 	//////////////////////delete f(x)'s	
 	protected Node del(String word) {//initial call
 		root=del(root,word);
-		//System.out.print("root:"+root.getData()+" f:"+root.getFreq());
 		return root;
 	}
 	protected Node del(Node n,String word) {//overloaded to recurse
-		if(n==null){return null;}
+		if(n==null){
+			System.out.println(word +" not in Tree");
+			return null;
+		}
 		switch(compare(word,n.getData())){
 			case(-1)://less than
 				n.setLeft(del(n.getLeft(),word));
@@ -107,7 +94,7 @@ public class Bst {
 			case(1)://greater than
 				n.setRight(del(n.getRight(),word));
 				break;
-			default:
+			case(0):
 				if(n.getFreq()>1){n.decFreq();break;}//if frequency > 1
 				else{//frequency = 1
 					if(n.getRight()==null){return n.getLeft();}
@@ -116,7 +103,11 @@ public class Bst {
 					n = min(temp.getRight());
 					n.setRight(delMin(temp.getRight()));
 					n.setLeft(temp.getLeft());
+					count--;
+					break;
 				}
+			default:
+				System.out.println("item not in Tree");
 			}
 		return n;
 	}
@@ -132,20 +123,27 @@ public class Bst {
 		return getFreq(root,word);
 	}
 	protected int getFreq(Node n,String word) {//overload to recurse
-		if(n==null){return 0;}
+		if(n==null){
+			System.out.println(word +" not in Tree");
+			return 0;
+		}
 		switch(compare(word,n.getData())){
 			case(-1)://less than
 				return getFreq(n.getLeft(),word);
 			case(1)://greater than
 				return getFreq(n.getRight(),word);
-			default:
+			case(0)://equals
 				return n.getFreq();
+			default:
+				System.out.print("Item not in tree ");
+				return 0;
 		}
 	}
 	
 	/////////////////report f(x)'s
-	public void report() {
-		System.out.println("report");
+	public void report(){
+		findMinMax(root);
+		System.out.println("report:\n\tno. of nodes: "+getCount()+"\n\tmin depth: "+minDepth()+"\n\tmax depth: "+maxDepth());
 	}
 
 	//////////helper f(x)
@@ -154,22 +152,62 @@ public class Bst {
 		else{return min(n.getLeft());}
 	}
 	
- 	private int compare(String word, String data) {//lexographic
+	private static String isRoot(Node n){
+		if(n.getData()==root.getData()){return "X";}
+		else{return n.getLorR();}
+		}
+	
+ 	private int compare(String word, String data) {//lexographic comparison
 		if(word.compareTo(data)>0){
-			System.out.println(word+" > "+data);
 			return 1;
 			}
 		else if(word.compareTo(data)<0){
-			System.out.println(word+" < "+data);
 			return -1;
 			}
 		else {//not sure if needed didn't have originally
-			System.out.println(word+" = "+data);
 			return 0;
 		}
 	}
 
-
+ 	public static void findMinMax(Node n){////recursively finds min/max depths
+		Queue nodes=new Queue();
+		nodes.insert(n);
+		minDep=(int) count;
+		maxDep=0;
+		while(nodes.getfront()!=null){
+			Node t=nodes.gethead();
+			if(t==null){continue;}
+			if(t.getLeft()==null&&t.getRight()==null){
+				if(t.getDepth()<minDep){minDep=t.getDepth();}
+				if(t.getDepth()>maxDep){maxDep=t.getDepth();}
+			}
+			nodes.insert(t.getLeft());
+			nodes.insert(t.getRight());
+		}
+	}
 	
-
+ 	public static void setParents(Node n){////sets parent nodes recursively after tree manipulation
+		Queue nodes=new Queue();
+		nodes.insert(n);
+		while(nodes.getfront()!=null){
+			Node t=nodes.gethead();
+			if(t==null){continue;}
+			if(t.getData()==root.getData()){
+				t.setParent(t);
+				t.setDepth(1);
+				}
+			if(t.getLeft()!=null){
+				t.getLeft().setParent(t);
+				t.getLeft().setDepth(t.getDepth()+1);
+				}
+			if(t.getRight()!=null){
+				t.getRight().setParent(t);
+				t.getRight().setDepth(t.getDepth()+1);
+				}
+			nodes.insert(t.getLeft());
+			nodes.insert(t.getRight());
+		}
+	}
+	
+	 	
 }
