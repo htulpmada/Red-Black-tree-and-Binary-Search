@@ -24,28 +24,31 @@ public class Bst {
  
 	
 	/////////////level order print f(x)'s
-	protected static void print(){print(root);}//no args prints root of tree
-	protected static void print(Node n){////prints all subtrees of n
+	protected static void print(boolean rb){print(root,rb);}//no args prints root of tree
+	protected static void print(Node n,boolean rb){////prints all subtrees of n
 		Queue nodes=new Queue();
 		nodes.insert(n);
+		if(root==null){System.out.println("!Empty Tree!");return;}
 		int nxtLv=root.getDepth();
 		int level=0;
 		while(nodes.getfront()!=null){
 			Node t=nodes.gethead();
 			if(t==null){continue;}
 			if(nxtLv==t.getDepth()){
-				System.out.print("\n"+ ++level+":");
+				System.out.print("\n"+ ++level+": ");
 				nxtLv++;
 				if(nodes.getfront()==null){
-					if(t.getLeft()==null&&t.getRight()==null){System.out.print(" =");}
-					System.out.print(""+t.getData()+"("+t.getParent().getData()+")"+t.getFreq()+isRoot(t)+" ");
+					if(t.getLeft()==null&&t.getRight()==null){System.out.print("=");}
+					if(rb){System.out.print(""+t.getData()+t.isRedPrint()+"("+t.getParent().getData()+t.getParent().isRedPrint()+")"+t.getFreq()+isRoot(t)+" ");}
+					else{System.out.print(""+t.getData()+"("+t.getParent().getData()+")"+t.getFreq()+isRoot(t)+" ");}
 					nodes.insert(t.getLeft());
 					nodes.insert(t.getRight());
 					continue;
 					}
 			}
-			if(t.getLeft()==null&&t.getRight()==null){System.out.print(" =");}
-			System.out.print(""+t.getData()+"("+t.getParent().getData()+")"+t.getFreq()+isRoot(t)+" ");
+			if(t.getLeft()==null&&t.getRight()==null){System.out.print("=");}
+			if(rb){System.out.print(""+t.getData()+t.isRedPrint()+"("+t.getParent().getData()+t.getParent().isRedPrint()+")"+t.getFreq()+isRoot(t)+" ");}
+			else{System.out.print(""+t.getData()+"("+t.getParent().getData()+")"+t.getFreq()+isRoot(t)+" ");}
 			nodes.insert(t.getLeft());
 			nodes.insert(t.getRight());
 		}
@@ -54,21 +57,22 @@ public class Bst {
 	
 	/////////////insert f(x)'s
 	protected Node ins(String word) {//initial call
-		root=ins(root,word,1);
+		root=ins(root,root,word,1);
 		return root;
 	}
-	private Node ins(Node n,String word, int lvl){//overloaded to recurse
+	private Node ins(Node n,Node p,String word, int lvl){//overloaded to recurse
 		if(n==null){
 			count++;
-			//System.out.print("\n"+word+" inserted @lvl: "+ lvl+" No:"+count+"\n\n");
-			return new Node(word,lvl);
+			n=new Node(word,p,lvl);
+			if(root==null){n.setParent(n);}
+			return n;
 			}
 		switch(compare(word,n.getData())){
 			case(-1)://less than
-				n.setLeft(ins(n.getLeft(),word,++lvl));
+				n.setLeft(ins(n.getLeft(),n,word,++lvl));
 				break;
 			case(1)://greater than
-				n.setRight(ins(n.getRight(),word,++lvl));
+				n.setRight(ins(n.getRight(),n,word,++lvl));
 				break;
 			default://equals
 				n.incFreq();
@@ -152,21 +156,15 @@ public class Bst {
 		else{return min(n.getLeft());}
 	}
 	
-	private static String isRoot(Node n){
-		if(n.getData()==root.getData()){return "X";}
+	protected static String isRoot(Node n){
+		if(n.getParent()==null||n.getData()==root.getData()){return "X";}
 		else{return n.getLorR();}
 		}
 	
- 	private int compare(String word, String data) {//lexographic comparison
-		if(word.compareTo(data)>0){
-			return 1;
-			}
-		else if(word.compareTo(data)<0){
-			return -1;
-			}
-		else {//not sure if needed didn't have originally
-			return 0;
-		}
+ 	protected int compare(String word, String data) {//lexographic comparison
+		if(word.compareTo(data)>0){return 1;}
+		else if(word.compareTo(data)<0){return -1;}
+		else {return 0;}
 	}
 
  	public static void findMinMax(Node n){////recursively finds min/max depths
@@ -186,7 +184,7 @@ public class Bst {
 		}
 	}
 	
- 	public static void setParents(Node n){////sets parent nodes recursively after tree manipulation
+ 	public static void setParents(Node n){////sets parent nodes after tree manipulation
 		Queue nodes=new Queue();
 		nodes.insert(n);
 		while(nodes.getfront()!=null){
@@ -204,8 +202,8 @@ public class Bst {
 				t.getRight().setParent(t);
 				t.getRight().setDepth(t.getDepth()+1);
 				}
-			nodes.insert(t.getLeft());
-			nodes.insert(t.getRight());
+			if(t.getLeft()!=null){nodes.insert(t.getLeft());}
+			if(t.getRight()!=null){nodes.insert(t.getRight());}
 		}
 	}
 	

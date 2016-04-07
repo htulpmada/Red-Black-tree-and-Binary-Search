@@ -16,26 +16,37 @@ public class Main {
 	static boolean rbTree=false;
 	static int argI=0;
 	static Bst BST;
+	static RedBlack RBTree;
 	static boolean haveTree = false;
 	/**
 	 * 
 	 * @param args - command line arguments
 	 */
 	public static void main(String[] args) {
-		processArgs(args);
-		readInFiles(args[1]);
-		BST=new Bst(words);
-		Bst.setParents(Bst.getRoot());
-		haveTree=true;
-		readInFiles(args[2]);
-		//System.out.println();
-		Bst.findMinMax(Bst.getRoot());
-		BST=processCommands(BST,commands);
-		//Bst.setParents(Bst.getRoot());
-		//Bst.print();
+		BST=new Bst();
+		RBTree=new RedBlack();
+		int i;
+		i=processArgs(args);
+		readInFiles(args[i]);
+		if(bst){BST=new Bst(words);BST.setParents(BST.getRoot());}
 		
+		if(rbTree){RBTree=new RedBlack(words);RBTree.setParents(RBTree.getRoot());}
+		haveTree=true;
+		System.out.println("\n\t\tdone making tree\n");
+		readInFiles(args[++i]);
+		if(bst){
+			BST.findMinMax(Bst.getRoot());
+			BST=processCommands(BST,commands);		
+			}
+		if(rbTree){
+			RBTree.findMinMax(RBTree.getRoot());
+			RBTree=processCommands(RBTree,commands);
+		}
 	}
-
+	/**
+	 * 
+	 * @param args reads in String of a file name strips punctuation lowers all capital letters and stores in global String ArrayList
+	 */
 	public static void readInFiles(String args){
 		File file = new File(args);
 		try {
@@ -68,19 +79,28 @@ public class Main {
 		}	
 	}
 	
-	public static void processArgs(String[] args){
+	public static int processArgs(String[] args){
+		int index=0;
 		for(int i=0;i<args.length;i++){
 			if(args[i].equals("-1")){
 				bst=true;
-				System.out.println("making a bst:");					
+				System.out.println("making a bst:");
+				continue;
 			}
-			if(args[i].equals("-2")){
+			else if(args[i].equals("-2")){
 				rbTree=true;
 				System.out.println("making rbTree:");
+				continue;
+			}
+			else{
+				index=i;
+				break;
 			}
 		}
+		return index;
 	}
-
+	
+	@SuppressWarnings("static-access")
 	private static Bst processCommands(Bst b,ArrayList<String> c) {
 		for(int i=0;i<c.size();i+=2){
 			switch(c.get(i)){
@@ -98,8 +118,8 @@ public class Main {
 				System.out.println("frequency of "+c.get(i+1)+": "+b.getFreq(c.get(i+1)));
 				break;
 			case("s"):
-				System.out.println("\tshow tree:");
-				b.print();
+				System.out.println("\tshow bstree:");
+				b.print(false);
 				i--;
 				break;
 			case("r"):
@@ -109,6 +129,39 @@ public class Main {
 			}
 		}
 		return b;		
+	}
+	private static RedBlack processCommands(RedBlack r,ArrayList<String> c) {
+		for(int i=0;i<c.size();i+=2){
+			switch(c.get(i)){
+			case("i"):
+				System.out.println(c.get(i+1)+" inserted");
+				r.ins(c.get(i+1));
+				r.setParents(r.getRoot());
+				break;
+			case("d"):
+				System.out.println(c.get(i+1)+" deleted");
+				r.del(c.get(i+1));
+				r.setParents(r.getRoot());
+				break;
+			case("f"):
+				System.out.println("frequency of "+c.get(i+1)+": "+r.getFreq(c.get(i+1)));
+				break;
+			case("s"):
+				System.out.println("\tshow rbtree:");
+				if(r!=null){r.print(true);}
+				else{System.out.println("!Empty tree!");}
+				i--;
+				break;
+			case("r"):
+				r.report();
+				i--;
+				break;
+			default: 
+				System.out.println("not a valid argument");
+				i--;
+			}
+		}
+		return r;		
 	}
 
 }
