@@ -1,0 +1,20 @@
+s 
+r
+f z 
+f a
+s 
+r
+i a
+i z
+f a
+f z
+d context
+d fox
+i fox
+
+i a
+i 
+b  z h q i c
+r
+s
+r
